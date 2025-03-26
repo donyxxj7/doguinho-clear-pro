@@ -1,0 +1,19 @@
+Changes needed:
+
+1. Remove the "Limpar Cache/Cookies" button from create_tabs():
+Original line to remove:
+vbox.addWidget(self.create_button("🧹 Limpar Cache/Cookies", limpar_cache_cookies_navegadores))
+
+2. Fix duplicate verificar_atualizacao() functions:
+Keep only one implementation:
+def verificar_atualizacao():
+    try:
+        logger.log_success("ATUALIZACAO", "Sistema", "Verificando atualizações disponíveis")
+        time.sleep(1)
+        msg = "🔄 Você já está usando a versão mais recente!"
+        logger.log_success("ATUALIZACAO", "Sistema", "Sistema está atualizado")
+        return msg
+    except Exception as e:
+        erro = f"Erro ao verificar atualizações: {str(e)}"
+        logger.log_error("ATUALIZACAO", "Sistema", erro)
+        return f"❌ {erro}"
