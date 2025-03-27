@@ -34,21 +34,13 @@ jobs:
         
     - name: Create Release
       id: create_release
-      uses: actions/create-release@v1
+      uses: softprops/action-gh-release@v1
       env:
-        GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.DOG_TOKEN }}
       with:
         tag_name: v${{ github.run_number }}.0.0
-        release_name: Release v${{ github.run_number }}.0.0
+        name: Release v${{ github.run_number }}.0.0
         draft: false
         prerelease: false
-        
-    - name: Upload Release Asset
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./dist/limpeza_gui_final.exe
-        asset_name: doguinho-clear-pro.exe
-        asset_content_type: application/octet-stream
+        files: |
+          ./dist/limpeza_gui_final.exe
