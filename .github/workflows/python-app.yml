@@ -21,30 +21,51 @@ jobs:
       with:
         python-version: "3.10"
     
-    - name: Debug directory structure
+    - name: Check file structure
+      shell: cmd
       run: |
-        echo "Current directory:"
+        echo "Checking repository structure..."
+        echo "Root directory:"
         dir
-        echo "Contents of src directory:"
+        echo "Source directory:"
         dir src
-        echo "Contents of root directory:"
-        dir
-        
+        echo "Assets directory:"
+        dir assets
+        echo "Checking specific files:"
+        if exist requirements.txt (
+          echo "requirements.txt found in root"
+          type requirements.txt
+        ) else (
+          echo "requirements.txt not found in root"
+        )
+        if exist src\requirements.txt (
+          echo "requirements.txt found in src"
+          type src\requirements.txt
+        ) else (
+          echo "requirements.txt not found in src"
+        )
+        if exist src\limpeza_gui_final.py (
+          echo "limpeza_gui_final.py found"
+        ) else (
+          echo "limpeza_gui_final.py not found"
+        )
+        if exist assets\doguinho_icon.ico (
+          echo "doguinho_icon.ico found"
+        ) else (
+          echo "doguinho_icon.ico not found"
+        )
+    
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         pip install wheel setuptools
-        if exist src\requirements.txt (pip install -r src\requirements.txt) else (pip install -r requirements.txt)
         pip install PySide6 pyinstaller
+        if exist requirements.txt (pip install -r requirements.txt)
+        if exist src\requirements.txt (pip install -r src\requirements.txt)
         
     - name: Build executable
       run: |
-        if exist src\limpeza_gui_final.py (
-          python -m PyInstaller --onefile --windowed --icon=assets\doguinho_icon.ico src\limpeza_gui_final.py
-        ) else (
-          echo "Error: src\limpeza_gui_final.py not found"
-          exit 1
-        )
+        python -m PyInstaller --onefile --windowed src\limpeza_gui_final.py
         
     - name: Upload build artifacts
       if: success()
