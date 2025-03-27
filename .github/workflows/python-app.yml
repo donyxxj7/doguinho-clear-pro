@@ -9,10 +9,6 @@ on:
 jobs:
   build:
     runs-on: windows-latest
-    permissions:
-      contents: read
-      packages: write
-    
     steps:
     - uses: actions/checkout@v3
     
@@ -39,7 +35,8 @@ jobs:
         pyinstaller --onefile --noconsole src/limpeza_gui_final.py
         dir dist
         
-    - uses: actions/upload-artifact@v3.1.2
+    - name: Upload Build Artifact
+      uses: actions/upload-artifact@main
       with:
         name: doguinho-clear-pro
-        path: dist/limpeza_gui_final.exe
+        path: dist/*.exe
