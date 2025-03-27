@@ -23,6 +23,8 @@ jobs:
         dir
         echo "Source directory:"
         dir src
+        echo "Assets directory:"
+        dir assets
         echo "Python version:"
         python --version
         
@@ -34,25 +36,17 @@ jobs:
         pip install psutil
         pip install pyinstaller
         
-    - name: Copy assets
+    - name: Test imports
       run: |
-        mkdir dist
-        xcopy /E /I assets dist\assets
+        python -c "import PySide6; print('PySide6 imported successfully')"
+        python -c "import psutil; print('psutil imported successfully')"
         
     - name: Build executable
       run: |
-        python -m PyInstaller ^
-          --name "Doguinho Clear Pro" ^
-          --onefile ^
-          --noconsole ^
-          --icon=assets/doguinho_icon.ico ^
-          --add-data "assets;assets" ^
-          src/limpeza_gui_final.py
+        pyinstaller src/limpeza_gui_final.py --onefile --noconsole
         
     - name: Upload artifact
       uses: actions/upload-artifact@v3
       with:
         name: doguinho-clear-pro
-        path: |
-          dist/*.exe
-          dist/assets/
+        path: dist/*.exe
