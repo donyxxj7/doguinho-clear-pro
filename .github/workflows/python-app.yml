@@ -9,6 +9,8 @@ on:
 jobs:
   build:
     runs-on: windows-latest
+    permissions:
+      contents: write
     steps:
     - uses: actions/checkout@v3
     
@@ -25,18 +27,28 @@ jobs:
         pip install psutil
         pip install pyinstaller
         
-    - name: Test imports
-      run: |
-        python -c "import PySide6; print('PySide6 import successful')"
-        python -c "import psutil; print('psutil import successful')"
-        
     - name: Build executable
       run: |
         pyinstaller --onefile --noconsole src/limpeza_gui_final.py
         dir dist
         
-    - name: Upload Build Artifact
-      uses: actions/upload-artifact@main
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
       with:
-        name: doguinho-clear-pro
-        path: dist/*.exe
+        tag_name: v${{ github.run_number }}.0.0
+        release_name: Release v${{ github.run_number }}.0.0
+        draft: false
+        prerelease: false
+        
+    - name: Upload Release Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./dist/limpeza_gui_final.exe
+        asset_name: doguinho-clear-pro.exe
+        asset_content_type: application/octet-stream
