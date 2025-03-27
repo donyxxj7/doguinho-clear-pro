@@ -21,24 +21,33 @@ jobs:
       with:
         python-version: "3.10"
     
+    - name: Debug directory structure
+      run: |
+        echo "Current directory:"
+        dir
+        echo "Contents of src directory:"
+        dir src
+        echo "Contents of root directory:"
+        dir
+        
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         pip install wheel setuptools
-        pip install -r requirements.txt
-        pip install PySide6
-        
-    - name: List directory contents
-      run: |
-        dir
-        dir src
-        dir assets
+        if exist src\requirements.txt (pip install -r src\requirements.txt) else (pip install -r requirements.txt)
+        pip install PySide6 pyinstaller
         
     - name: Build executable
       run: |
-        python -m PyInstaller --onefile --windowed --icon=assets/doguinho_icon.ico src/limpeza_gui_final.py
+        if exist src\limpeza_gui_final.py (
+          python -m PyInstaller --onefile --windowed --icon=assets\doguinho_icon.ico src\limpeza_gui_final.py
+        ) else (
+          echo "Error: src\limpeza_gui_final.py not found"
+          exit 1
+        )
         
     - name: Upload build artifacts
+      if: success()
       uses: actions/upload-artifact@v3
       with:
         name: doguinho-clear-pro
