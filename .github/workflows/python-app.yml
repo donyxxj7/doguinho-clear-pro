@@ -28,9 +28,15 @@ jobs:
         pip install -r requirements.txt
         pip install PySide6
         
+    - name: List directory contents
+      run: |
+        dir
+        dir src
+        dir assets
+        
     - name: Build executable
       run: |
-        pyinstaller --onefile --windowed --icon=assets/doguinho_icon.ico src/limpeza_gui_final.py
+        python -m PyInstaller --onefile --windowed --icon=assets/doguinho_icon.ico src/limpeza_gui_final.py
         
     - name: Upload build artifacts
       uses: actions/upload-artifact@v3
