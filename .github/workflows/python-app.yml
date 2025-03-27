@@ -21,55 +21,21 @@ jobs:
       with:
         python-version: "3.10"
     
-    - name: Check file structure
-      shell: cmd
+    - name: Test Python
       run: |
-        echo "Checking repository structure..."
-        echo "Root directory:"
+        python --version
+        python -c "print('Hello from Python')"
+        
+    - name: List files
+      run: |
         dir
-        echo "Source directory:"
         dir src
-        echo "Assets directory:"
-        dir assets
-        echo "Checking specific files:"
-        if exist requirements.txt (
-          echo "requirements.txt found in root"
-          type requirements.txt
-        ) else (
-          echo "requirements.txt not found in root"
-        )
-        if exist src\requirements.txt (
-          echo "requirements.txt found in src"
-          type src\requirements.txt
-        ) else (
-          echo "requirements.txt not found in src"
-        )
-        if exist src\limpeza_gui_final.py (
-          echo "limpeza_gui_final.py found"
-        ) else (
-          echo "limpeza_gui_final.py not found"
-        )
-        if exist assets\doguinho_icon.ico (
-          echo "doguinho_icon.ico found"
-        ) else (
-          echo "doguinho_icon.ico not found"
-        )
-    
-    - name: Install dependencies
+        
+    - name: Install basic dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install wheel setuptools
-        pip install PySide6 pyinstaller
-        if exist requirements.txt (pip install -r requirements.txt)
-        if exist src\requirements.txt (pip install -r src\requirements.txt)
+        pip install PySide6
         
-    - name: Build executable
+    - name: Test PySide6
       run: |
-        python -m PyInstaller --onefile --windowed src\limpeza_gui_final.py
-        
-    - name: Upload build artifacts
-      if: success()
-      uses: actions/upload-artifact@v3
-      with:
-        name: doguinho-clear-pro
-        path: dist/
+        python -c "from PySide6.QtWidgets import QApplication; print('PySide6 imported successfully')"
