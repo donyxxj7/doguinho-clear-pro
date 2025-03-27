@@ -35,7 +35,7 @@ jobs:
         pyinstaller --onefile --noconsole src/limpeza_gui_final.py
         
     - name: Upload artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v2
       with:
         name: doguinho-clear-pro
         path: dist/*.exe
